@@ -20,11 +20,10 @@ public class WeatherDB {
 
 	private static WeatherDB weatherDB;
 
-	private SQLiteDatabase db;
+	public SQLiteDatabase db;	//这里使用public，为了使用事务，做了一个折衷
 
 	// 私有化构造
 	private WeatherDB(Context context) {
-
 		WeatherOpenHelper dbHelper = new WeatherOpenHelper(context, DB_NAME,
 				null, VERSION);
 		db = dbHelper.getWritableDatabase();
@@ -49,7 +48,7 @@ public class WeatherDB {
 	}
 
 	// 读取省份信息
-	public List<Province> loadProvince() {
+	public List<Province> loadProvinces() {
 		List<Province> list = new ArrayList<Province>();
 		Cursor cursor = db
 				.query("Province", null, null, null, null, null, null);
@@ -79,7 +78,7 @@ public class WeatherDB {
 	}
 
 	// 读取城市信息
-	public List<City> loadCity(int provinceId) {
+	public List<City> loadCities(int provinceId) {
 		List<City> list = new ArrayList<City>();
 		Cursor cursor = db.query("City", null, "province_id = ?",
 				new String[] { String.valueOf(provinceId) }, null, null, null);
@@ -110,7 +109,7 @@ public class WeatherDB {
 	}
 
 	// 读取县信息
-	public List<County> loadCounty(int cityId) {
+	public List<County> loadCounties(int cityId) {
 		List<County> list = new ArrayList<County>();
 		Cursor cursor = db.query("County", null, "city_id = ?",
 				new String[] { String.valueOf(cityId) }, null, null, null);
