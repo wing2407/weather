@@ -14,7 +14,10 @@ import com.weather.app.model.Province;
 import com.weather.app.model.WeatherDB;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -49,6 +52,17 @@ public class ChooseAreaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+/*		//读取标志位，如果为ture直接跳转
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (prefs.getBoolean("city_selected", false)) {
+			Intent intent = new Intent(this, WeatherActivity.class);
+			startActivity(intent);
+			finish();
+			return;
+		}*/
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
 
@@ -69,6 +83,13 @@ public class ChooseAreaActivity extends Activity {
 				} else if (currentLevel == LEVEL_CITY) {
 					selectedCity = cityList.get(index);
 					queryCounties();
+				} else if (currentLevel == LEVEL_COUNTY) {
+					String countyCode = countyList.get(index).getCountyCode();
+					Intent intent = new Intent(ChooseAreaActivity.this,
+							WeatherActivity.class);
+					intent.putExtra("county_code", countyCode);
+					startActivity(intent);
+					finish();
 				}
 			}
 		});
@@ -173,14 +194,14 @@ public class ChooseAreaActivity extends Activity {
 								null, "name"));
 						county.setCityId(Integer.parseInt(city_id));
 						weatherDB.saveCounty(county);
-						Log.d("MainActivity", "id is " + county_id);
+						//Log.d("MainActivity", "id is " + county_id);
 					}
 					break;
 				}// 完成解析某个结点
 				case XmlPullParser.END_TAG: {
 					if ("province".equals(nodeName)) {
 						closeProgressDialog();
-						queryProvinces();	
+						queryProvinces();
 					}
 					break;
 				}
