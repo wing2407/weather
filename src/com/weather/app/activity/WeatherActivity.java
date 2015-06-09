@@ -26,7 +26,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private TextView tempText; // 用于显示气温
 	private TextView windyText; // 用于显示风力风向
 	private TextView currentDateText; // 用于显示当前日期
-	private Button futureButton; // 用于未来几天的天气的按钮
+	private TextView futureText; // 用于未来几天的天气的按钮
 	private Button switchCity; // 切换城市按钮
 	private Button refreshWeather; // 更新天气按钮
 
@@ -42,22 +42,22 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		tempText = (TextView) findViewById(R.id.temp);
 		windyText = (TextView) findViewById(R.id.windy);
 		currentDateText = (TextView) findViewById(R.id.current_date);
-		futureButton = (Button) findViewById(R.id.future);
+		futureText = (TextView) findViewById(R.id.future);
 		switchCity = (Button) findViewById(R.id.switch_city);
 		refreshWeather = (Button) findViewById(R.id.refresh_weather);
 
-		String countyCode = getIntent().getStringExtra("county_code");
-		if (!TextUtils.isEmpty(countyCode)) {
-			// 有县级代号时就去查询天气
+		String weatherCode = getIntent().getStringExtra("weather_code");
+		if (!TextUtils.isEmpty(weatherCode)) {
+			// 有天气代号时就去查询天气
 			tempText.setText("同步中...");
 			weatherInfoLayout.setVisibility(View.INVISIBLE);
 			cityNameText.setVisibility(View.INVISIBLE);
-			queryWeatherInfo(countyCode);
+			queryWeatherInfo(weatherCode);
 		} else {
-			// 没有县级代号时就直接显示本地天气
+			// 没有天气代号时就直接显示本地天气
 			showWeather();
 		}
-		futureButton.setOnClickListener(this);
+		futureText.setOnClickListener(this);
 		switchCity.setOnClickListener(this);
 		refreshWeather.setOnClickListener(this);
 	}
@@ -73,12 +73,15 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.refresh_weather:
 			tempText.setText("同步中...");
-			String countyCode = getIntent().getStringExtra("county_code");
+			String countyCode = getIntent().getStringExtra("weather_code");
 			if (!TextUtils.isEmpty(countyCode)) {
 				queryWeatherInfo(countyCode);
 			}
 			break;
 		case R.id.future:
+			Intent intent_future = new Intent(this, FutureWeatherActivity.class);
+			//intent_future.putExtra("city_name", ci);
+			startActivity(intent_future);
 			break;
 		default:
 			break;
@@ -86,9 +89,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	}
 
 	// 查询天气代号所对应的天气。
-	private void queryWeatherInfo(String countyCode) {
-		String address = "http://wthrcdn.etouch.cn/weather_mini?citykey=101"
-				+ countyCode;
+	private void queryWeatherInfo(String weatherCode) {
+		String address = "http://wthrcdn.etouch.cn/weather_mini?citykey="
+				+ weatherCode;
 		queryFromServer(address);
 	}
 
@@ -127,8 +130,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		tempText.setText(prefs.getString("temp", "")+"℃");
 		windyText.setText(prefs.getString("fengxiang", "") + "/"
 				+ prefs.getString("fengli", ""));
-		weatherTypeText.setText(prefs.getString("type0", ""));
-		futureButton.setText("未来五天  >");
+		weatherTypeText.setText(prefs.getString("type", ""));
+		futureText.setText("未来五天  >");
 		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);

@@ -25,6 +25,7 @@ public class WeatherOpenHelper extends SQLiteOpenHelper {
 			+ "id integer primary key autoincrement, "
 			+ "county_name text, "
 			+ "county_code text, "
+			+ "weather_code text, "
 			+ "city_id integer)";
 
 	public WeatherOpenHelper(Context context, String name, CursorFactory

@@ -40,7 +40,7 @@
         android:layout_weight="1"
         android:background="#27A5F9" >
 
-        <Button
+        <TextView
             android:id="@+id/future"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,6 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="30℃"
                 android:textColor="#FFF"
                 android:textSize="80sp" />
 
@@ -74,7 +73,6 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="多云"
                 android:textColor="#FFF"
                 android:textSize="35sp" />
 
@@ -85,7 +83,6 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginRight="10dp"
                     android:layout_gravity="right"
-                    android:text="2015年6月9日"
                     android:textColor="#FFF"
                     android:textSize="20sp" />
 
@@ -95,7 +92,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_gravity="right"
-                    android:text="fengxiangnanfeng"
                     android:textColor="#FFF"
                     android:textSize="20sp" />
         </LinearLayout>

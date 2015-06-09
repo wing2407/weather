@@ -15,10 +15,7 @@ import com.weather.app.model.WeatherDB;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -84,10 +81,10 @@ public class ChooseAreaActivity extends Activity {
 					selectedCity = cityList.get(index);
 					queryCounties();
 				} else if (currentLevel == LEVEL_COUNTY) {
-					String countyCode = countyList.get(index).getCountyCode();
+					String weatherCode = countyList.get(index).getWeatherCode();
 					Intent intent = new Intent(ChooseAreaActivity.this,
 							WeatherActivity.class);
-					intent.putExtra("county_code", countyCode);
+					intent.putExtra("weather_code", weatherCode);
 					startActivity(intent);
 					finish();
 				}
@@ -192,6 +189,8 @@ public class ChooseAreaActivity extends Activity {
 						county.setCountyCode(county_id);
 						county.setCountyName(xmlPullParser.getAttributeValue(
 								null, "name"));
+						county.setWeatherCode(xmlPullParser.getAttributeValue(
+								null, "weatherCode"));
 						county.setCityId(Integer.parseInt(city_id));
 						weatherDB.saveCounty(county);
 						//Log.d("MainActivity", "id is " + county_id);

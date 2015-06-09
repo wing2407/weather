@@ -103,6 +103,7 @@ public class WeatherDB {
 			ContentValues values = new ContentValues();
 			values.put("county_name", county.getCountyName());
 			values.put("county_code", county.getCountyCode());
+			values.put("weather_code", county.getWeatherCode());
 			values.put("city_id", county.getCityId());
 			db.insert("County", null, values);
 		}
@@ -121,6 +122,8 @@ public class WeatherDB {
 						.getColumnIndex("county_name")));
 				county.setCountyCode(cursor.getString(cursor
 						.getColumnIndex("county_code")));
+				county.setWeatherCode(cursor.getString(cursor
+						.getColumnIndex("weather_code")));
 				county.setCityId(cityId);
 				list.add(county);
 			} while (cursor.moveToNext());
