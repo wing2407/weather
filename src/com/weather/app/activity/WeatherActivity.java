@@ -1,6 +1,7 @@
 package com.weather.app.activity;
 
 import com.weather.app.R;
+import com.weather.app.service.AutoUpdateService;
 import com.weather.app.util.HttpCallbackListener;
 import com.weather.app.util.HttpUtil;
 import com.weather.app.util.Utility;
@@ -29,6 +30,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private TextView futureText; // 用于未来几天的天气的按钮
 	private Button switchCity; // 切换城市按钮
 	private Button refreshWeather; // 更新天气按钮
+	private String weatherCode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.weather);
 
 		weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
-		cityNameText = (TextView) findViewById(R.id.city_name);		
+		cityNameText = (TextView) findViewById(R.id.city_name);
 		weatherTypeText = (TextView) findViewById(R.id.weather_type);
 		tempText = (TextView) findViewById(R.id.temp);
 		windyText = (TextView) findViewById(R.id.windy);
@@ -46,7 +48,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		switchCity = (Button) findViewById(R.id.switch_city);
 		refreshWeather = (Button) findViewById(R.id.refresh_weather);
 
-		String weatherCode = getIntent().getStringExtra("weather_code");
+		weatherCode = getIntent().getStringExtra("weather_code");
 		if (!TextUtils.isEmpty(weatherCode)) {
 			// 有天气代号时就去查询天气
 			tempText.setText("同步中...");
@@ -73,14 +75,14 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.refresh_weather:
 			tempText.setText("同步中...");
-			String countyCode = getIntent().getStringExtra("weather_code");
-			if (!TextUtils.isEmpty(countyCode)) {
-				queryWeatherInfo(countyCode);
+			String weatherCode = getIntent().getStringExtra("weather_code");
+			if (!TextUtils.isEmpty(weatherCode)) {
+				queryWeatherInfo(weatherCode);
 			}
 			break;
 		case R.id.future:
 			Intent intent_future = new Intent(this, FutureWeatherActivity.class);
-			//intent_future.putExtra("city_name", ci);
+			// intent_future.putExtra("city_name", ci);
 			startActivity(intent_future);
 			break;
 		default:
@@ -127,7 +129,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		cityNameText.setText(prefs.getString("city_name", ""));
-		tempText.setText(prefs.getString("temp", "")+"℃");
+		tempText.setText(prefs.getString("temp", "") + "℃");
 		windyText.setText(prefs.getString("fengxiang", "") + "/"
 				+ prefs.getString("fengli", ""));
 		weatherTypeText.setText(prefs.getString("type", ""));
@@ -135,6 +137,16 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+		Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
+		intent.putExtra("weather_code", weatherCode);
+		startService(intent);
 	}
 
+	@Override
+	protected void onDestroy() {
+		//退出时候关闭服务
+		WeatherActivity.this.stopService(new Intent(WeatherActivity.this,
+				AutoUpdateService.class));
+		super.onDestroy();
+	}
 }
